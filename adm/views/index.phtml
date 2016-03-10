@@ -62,7 +62,7 @@ function display_treeview($app_menu,$pid){
 <body class="easyui-layout">
     <!-- 顶部 -->
     <div data-options="region:'north'" id="panel_top">
-        <p class="logo">广东三养健康管理系统</p>
+        <p class="logo">SDVenus System</p>
         <p class="user_info">
             <span><?php echo $this->session->userdata('user_name').'('.$this->session->userdata('true_name').')'?></span>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -86,7 +86,6 @@ function display_treeview($app_menu,$pid){
             <!-- 系统菜单 -->
             <div title="系统菜单" data-options="" style="padding:10px;">
                 <ul class="easyui-tree" id="sys_menu">
-                    <li><a url="<?php echo base_url('/sys/branch');?>"  pos="#sys-branch">分店管理</a></li>
                     <li><a url="<?php echo base_url('/sys/user');?>" pos="#sys-user">系统用户</a></li>
                     <li><a url="<?php echo base_url('/sys/menu');?>" pos="#sys-menu">应用菜单</a></li>
                     <li><a url="<?php echo base_url('/sys/pms');?>"  pos="#sys-pms">用户权限</a></li>

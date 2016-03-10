@@ -15,7 +15,7 @@ class user_model extends MY_Model {
 
 
     public function search($params, $order, $page) {
-        $fields = 'user_id, user_name, true_name, bid, uposition, is_admin, create_uname, create_time';
+        $fields = 'user_id, user_name, true_name, uposition, is_admin, create_uname, create_time';
         $where = array(
                     array('is_del', '0'),
                     array('user_name', get_value($params, 'user_name'), 'like'),
@@ -24,13 +24,6 @@ class user_model extends MY_Model {
                     array('is_admin', get_value($params, 'is_admin')),
         );
         $result = $this->db->get_page($this->table, $fields, $where, $order, $page);
-        $this->load->model('sys/branch_model', 'branch_model');
-        $CI = &get_instance();
-        foreach($result['rows'] as $k=>$v) {
-            if($bname = $CI->branch_model->get_name_by_id($v['bid'])) {
-                $result['rows'][$k]['bname'] = $bname;
-            }
-        }
         return $result;
     }
 
@@ -42,11 +35,6 @@ class user_model extends MY_Model {
         $query->free_result();
         if($count>0) {
             return $this->create_result(false, 1, '用户账号重复');
-        }
-        $this->load->model('sys/branch_model', 'branch_model');
-        $CI = &get_instance();
-        if(!$CI->branch_model->is_leaf($info['bid'])) {
-            return $this->create_result(false, 2, '分店选择非法，请重新选择');
         }
         $info['create_uname'] = $this->session->userdata('user_name');
         $this->db->insert($this->table, $info);
@@ -63,11 +51,6 @@ class user_model extends MY_Model {
         $query->free_result();
         if($count>0) {
             return $this->create_result(false, 1, '用户账号重复');
-        }
-        $this->load->model('sys/branch_model', 'branch_model');
-        $CI = &get_instance();
-        if(!$CI->branch_model->is_leaf($info['bid'])) {
-            return $this->create_result(false, 2, '分店选择非法，请重新选择');
         }
         if($info['pwd']!='not-pwd') {
             $info['pwd'] = $this->password_encode($info['pwd']);
@@ -92,7 +75,7 @@ class user_model extends MY_Model {
 
 
     public function check_login($user_name, $pwd) {
-        $query = $this->db->select('user_id, user_name, true_name, pwd, uposition, is_admin, bid')
+        $query = $this->db->select('user_id, user_name, true_name, pwd, uposition, is_admin')
                         ->from($this->table)
                         ->where('user_name', $user_name)
                         ->get();
@@ -136,13 +119,6 @@ class user_model extends MY_Model {
     public function get_list() {
         $fields = 'user_id, user_name, true_name, bid, uposition, is_admin, create_uname, create_time';
         $result = $this->db->get_list($this->table, $fields);
-        $this->load->model('sys/branch_model', 'branch_model');
-        $CI = &get_instance();
-        foreach($result['rows'] as $k=>$v) {
-            if($bname = $CI->branch_model->get_name_by_id($v['bid'])) {
-                $result['rows'][$k]['bname'] = $bname;
-            }
-        }
         return $result['rows'];
     }
 }
