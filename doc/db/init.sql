@@ -1,8 +1,8 @@
 --
--- 数据库: `miyaki`
+-- 数据库: `sdvenus`
 --
 set names utf8;
-create database miyaki;
+create database sdvenus;
 
 -- --------------------------------------------------------
 
