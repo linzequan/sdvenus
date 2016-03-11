@@ -31,3 +31,18 @@ create table if not exists `sjyh_content` (
     `update_user_id` int comment '更新账号id',
     primary key (`id`)
 ) engine = myisam character set utf8 collate utf8_general_ci comment = '商家优惠内容表';
+
+
+-- linzequan 20160311
+-- 商家优惠添加地区表
+create table if not exists `sjyh_zone` (
+    `id` int not null auto_increment comment '自增id',
+    `name` varchar(256) comment '地区名称',
+    `rank` int default 100 comment '排序，值越大越靠前。默认100',
+    primary key (`id`)
+) engine = myisam character set utf8 collate utf8_general_ci comment = '商家优惠地区表';
+
+
+-- linzequan 20160311
+-- 商家优惠内容表添加地区字段
+alter table `sjyh_content` add `zone_id` int comment '地区id';
