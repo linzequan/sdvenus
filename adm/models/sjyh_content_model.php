@@ -56,7 +56,7 @@ class sjyh_content_model extends MY_Model {
             'photoList'     => get_value($info, 'photoList'),
             'rank'          => get_value($info, 'rank'),
             'zone_id'       => get_value($info, 'zone_id'),
-            'create_time'   => time()
+            'create_time'   => time(),
             'create_user_id'=> $this->session->userdata('user_id')
         );
         $this->db->insert($this->table, $data);
