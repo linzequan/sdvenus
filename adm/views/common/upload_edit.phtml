@@ -1,0 +1,42 @@
+<div id="dlg-edit" class="easyui-dialog" style="width:340px;height:260px;padding:10px 20px"
+    closed="true" modal="true" buttons="#dlg-edit-buttons" title="编辑表单">
+    <form id="fm-edit" method="post" action="<?php echo base_url('sjyh/zone/post')?>" novalidate>
+        <input type="hidden" name="actionxm" value="">
+        <input type="hidden" name="id" value="">
+        <table class="fm-table" cellpadding="4px">
+            <colgroup>
+                <col width="50px" /><col width="30px" /><col width="*" />
+            </colgroup>
+            <tr>
+                <td>图片：</td>
+                <td>
+                    <input id="photo" type="file" multiple="true" value="" />
+                    <div>
+                        <img src="" id="photo_prev">
+                    </div>
+                </td>
+                <td>
+                    <span style="color:red;"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>url：</td>
+                <td>
+                    <input class="easyui-textbox js_photo" data-options="readonly:true" style="width:200px;" name="name" value="">
+                </td>
+                <td>
+                    <span style="color:red;"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>预览：</td>
+                <td>
+                    <div class="js_photoPrev" style="width:100px; height:100px; border: 1px solid #ccc; padding: 3px;"></div>
+                </td>
+                <td>
+                    <span style="color:red;"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

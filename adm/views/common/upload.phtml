@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <?php
+        $this->load->view('/public/linker',array(
+            'css'=>array('uploadify'),
+            'js' =>array('uploadify'),
+        ));
+        $ctrl_url = base_url('common/upload');
+    ?>
+</head>
+<body>
+    <div id="p-dg" class="easyui-panel" title="图片管理" fit="true" border="false">
+        <table id="dg" class="easyui-datagrid" title=""
+               fit="true" border="false" plain="true"
+               toolbar="#toolbar" multiSort="true"
+               rownumbers="false" pagination="true" pageList="[50,100,150,200]" pageSize="50"
+               singleSelect="true" remote>
+            <thead>
+                <tr>
+                    <th data-options="sortable:true,field:'id',width:50">编号</th>
+                    <th data-options="sortable:true,field:'show_photo',width:150" formatter="format_photo">图片</th>
+                    <th data-options="sortable:true,field:'url',width:600">地址</th>
+                    <th data-options="sortable:true,field:'create_user_name',width:80">创建人</th>
+                    <th data-options="sortable:true,field:'create_time',width:130">创建时间</th>
+                </tr>
+            </thead>
+        </table>
+
+        <div id="toolbar" style="padding:2px 3px;">
+            <form id="fm-search" method="post" novalidate>
+                <div style="margin:3px 0;">
+                    <a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="open_insert()">添加</a>
+                    <a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" onclick="do_delete()">删除</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <?php $this->load->view('common/upload_edit');?>
+
+    <script type="text/javascript">
+    $(function() {
+        window.setTimeout(function() {
+            var obj = new Object();
+            obj.actionxm = 'search';
+            obj.rs = $('#fm-search').form('getData');
+            $('#dg').datagrid({
+                url: "<?php echo $ctrl_url.'/get'?>",
+                method: 'post',
+                queryParams: obj
+            });
+        }, 100);
+
+        var prev_host = 'http://<?php echo $_SERVER["HTTP_HOST"]; ?>/www/res/photo/';
+        $('#photo').uploadify({
+            fileTypeDesc: '上传文件',
+            fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',
+            multi: false,
+            buttonText: '上传图片',
+            height: '25',
+            width: '100',
+            swf: '<?php echo base_url("/static/js/uploadify.swf");?>',
+            method: 'post',
+            fileObjName: 'uploadfile',
+            uploader: '<?php echo $ctrl_url; ?>/post',
+            formData: {
+                'actionxm': 'upload_file'
+            },
+            onUploadStart: function(file) {
+                $.messager.progress();
+            },
+            onUploadSuccess:function(file, data, response){
+                result = $.parseJSON(data);
+                if(result['success']){
+                    $('.js_photo').textbox('setValue', prev_host+result['data']['name']);
+                    $('.js_photoPrev').html('<img src="' + prev_host + result['data']['name'] + '" style="height:100px;">');
+                    $('#dg').datagrid('reload');
+                }else{
+                    $.messager.alert('操作提示',result['data']);
+                }
+                $.messager.progress('close');
+            }
+        });
+    });
+
+    function open_insert() {
+        $('#fm-edit').form('clear').form('load',{actionxm:'insert'});
+        $('#dlg-edit').dialog('setTitle','图片上传').dialog('open');
+    }
+
+    function format_photo(val, row) {
+        var str = '<a href="' + val + '" target="_blank"><img src="' + val + '" style="height:50px;padding-top:5px;"></a>';
+        return str;
+    }
+
+    function do_delete(){
+        var info=$('#dg').datagrid('getSelected');
+        if(info==null){
+            $.messager.alert('操作提示','请选择需要删除的记录!','warning');
+            return;
+        }
+        $.messager.confirm('操作提示','你确定要删除此记录吗?',function(r){
+            if (r){
+                $.post('<?php echo $ctrl_url.'/post'; ?>',{id:info.id,actionxm:'delete'},function(result){
+                    if (result.success){
+                        $('#dg').datagrid('reload');
+                    } else {
+                        $.messager.alert('操作提示','删除成功');
+                    }
+                },'json');
+            }
+        });
+    }
+    </script>
+</body>
+</html>
+
