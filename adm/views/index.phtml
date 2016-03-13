@@ -114,6 +114,7 @@ function display_treeview($app_menu,$pid){
         </div>
         <div id="tab-tools">
             <span class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel'" onclick="javascript:remove_all_tabs();">清空</span>
+            <span class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-upload'" onclick="do_upload()">上传图片</span>
         </div>
     </div>
     <!-- /主体-->
@@ -144,6 +145,9 @@ function display_treeview($app_menu,$pid){
         <a href="#this" class="easyui-linkbutton w90" iconCls="icon-ok" onclick="javascript:do_pwd_update();">确定</a>
         <a href="#this" class="easyui-linkbutton w90" iconCls="icon-cancel" onclick="javascript:$('#dlg-pwd-update').dialog('close')">取消</a>
     </div>
+
+    <?php $this->load->view('common/upload_edit');?>
+
     <script type="text/javascript">
     $(document).ready(function(){
         $('.easyui-tree a').click(function(){
@@ -177,6 +181,10 @@ function display_treeview($app_menu,$pid){
             }
         })();
     });
+    function do_upload() {
+        $('#fm-edit').form('clear').form('load',{actionxm:'insert', open_from:'common'});
+        $('#dlg-edit').dialog('setTitle','图片上传').dialog('open');
+    }
     function open_pwd_update(){
         $('#dlg-pwd-update').dialog('open');
     }

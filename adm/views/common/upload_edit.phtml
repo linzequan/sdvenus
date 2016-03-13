@@ -1,7 +1,12 @@
+<?php
+    $ctrl_url = base_url('common/upload');
+?>
+
 <div id="dlg-edit" class="easyui-dialog" style="width:340px;height:300px;padding:10px 20px"
     closed="true" modal="true" buttons="#dlg-edit-buttons" title="编辑表单">
-    <form id="fm-edit" method="post" action="<?php echo base_url('sjyh/zone/post')?>" novalidate>
+    <form id="fm-edit" method="post" action="<?php echo base_url('common/upload/post')?>" novalidate>
         <input type="hidden" name="actionxm" value="">
+        <input type="hidden" name="open_from" class="js_open_from" value="">
         <input type="hidden" name="id" value="">
         <table class="fm-table" cellpadding="4px">
             <colgroup>
@@ -43,3 +48,40 @@
 <div id="dlg-edit-buttons">
     <button class="easyui-linkbutton w90" iconCls="icon-ok" onclick="javascript:$('#dlg-edit').dialog('close')">完成</button>
 </div>
+
+<script type="text/javascript">
+    $(function() {
+        var prev_host = 'http://<?php echo $_SERVER["HTTP_HOST"] . $this->config->item("photo_dir"); ?>';
+        $('#photo').uploadify({
+            fileTypeDesc: '上传文件',
+            fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',
+            multi: false,
+            buttonText: '上传图片',
+            height: '25',
+            width: '100',
+            swf: '<?php echo base_url("/static/js/uploadify.swf");?>',
+            method: 'post',
+            fileObjName: 'uploadfile',
+            uploader: '<?php echo $ctrl_url; ?>/post',
+            formData: {
+                'actionxm': 'upload_file'
+            },
+            onUploadStart: function(file) {
+                $.messager.progress();
+            },
+            onUploadSuccess:function(file, data, response){
+                result = $.parseJSON(data);
+                if(result['success']){
+                    $('.js_photo').textbox('setValue', prev_host+result['data']['name']);
+                    $('.js_photoPrev').html('<img src="' + prev_host + result['data']['name'] + '" style="height:100px;">');
+                    if($('.js_open_from').val()!='common') {
+                        $('#dg').datagrid('reload');
+                    }
+                }else{
+                    $.messager.alert('操作提示',result['data']);
+                }
+                $.messager.progress('close');
+            }
+        });
+    });
+</script>

@@ -3,8 +3,8 @@
 <head>
     <?php
         $this->load->view('/public/linker',array(
-            'css'=>array('uploadify'),
-            'js' =>array('uploadify'),
+            'css'=>array(),
+            'js' =>array(),
         ));
         $ctrl_url = base_url('common/upload');
     ?>
@@ -51,37 +51,6 @@
                 queryParams: obj
             });
         }, 100);
-
-        var prev_host = 'http://<?php echo $_SERVER["HTTP_HOST"] . $this->config->item("photo_dir"); ?>';
-        $('#photo').uploadify({
-            fileTypeDesc: '上传文件',
-            fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',
-            multi: false,
-            buttonText: '上传图片',
-            height: '25',
-            width: '100',
-            swf: '<?php echo base_url("/static/js/uploadify.swf");?>',
-            method: 'post',
-            fileObjName: 'uploadfile',
-            uploader: '<?php echo $ctrl_url; ?>/post',
-            formData: {
-                'actionxm': 'upload_file'
-            },
-            onUploadStart: function(file) {
-                $.messager.progress();
-            },
-            onUploadSuccess:function(file, data, response){
-                result = $.parseJSON(data);
-                if(result['success']){
-                    $('.js_photo').textbox('setValue', prev_host+result['data']['name']);
-                    $('.js_photoPrev').html('<img src="' + prev_host + result['data']['name'] + '" style="height:100px;">');
-                    $('#dg').datagrid('reload');
-                }else{
-                    $.messager.alert('操作提示',result['data']);
-                }
-                $.messager.progress('close');
-            }
-        });
     });
 
     function open_insert() {
