@@ -51,3 +51,8 @@ alter table `sjyh_content` add `zone_id` int comment '地区id';
 -- linzequan 20160311
 -- 商家优惠地区表添加创建和更新信息字段
 alter table `sjyh_zone` add `create_time` int(11) comment '创建时间', add `create_user_id` int comment '创建账号id', add `update_time` int(11) comment '更新时间', add `update_user_id` int comment '更新账号id';
+
+
+-- linzequan 20160313
+-- 商家优惠内容表修改优惠日期字段类型
+alter table `sjyh_content` change column `period` `period` varchar(256) comment '优惠日期';
