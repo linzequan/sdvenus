@@ -56,3 +56,16 @@ alter table `sjyh_zone` add `create_time` int(11) comment '创建时间', add `c
 -- linzequan 20160313
 -- 商家优惠内容表修改优惠日期字段类型
 alter table `sjyh_content` change column `period` `period` varchar(256) comment '优惠日期';
+
+
+-- linzequan 20160314
+-- 公共模块添加图片管理表
+create table if not exists `common_upload` (
+    `id` int not null auto_increment comment '自增id',
+    `url` varchar(256) comment '图片地址',
+    `create_time` int(11) comment '创建时间',
+    `create_user_id` int comment '创建账号id',
+    `update_time` int(11) comment '更新时间',
+    `update_user_id` int comment '更新账号id',
+    primary key (`id`)
+) engine = myisam character set utf8 collate utf8_general_ci comment = '公共模块添加图片管理表';
