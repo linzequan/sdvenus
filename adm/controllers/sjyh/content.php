@@ -17,6 +17,21 @@ class content extends MY_Controller {
         $this->load->view('sjyh/content');
     }
 
+    public function info($id=0) {
+        $data = array(
+            'actionxm' => 'insert',
+            'info' => array()
+        );
+        if(intval($id)>0) {
+            $info = $this->def_model->get_info($id);
+            if(count($info)>0) {
+                $data['actionxm'] = 'update';
+                $data['info'] = $info;
+            }
+        }
+        $this->load->view('sjyh/content_info', $data);
+    }
+
 
     public function get() {
         $actionxm = $this->get_request('actionxm');
@@ -27,9 +42,14 @@ class content extends MY_Controller {
                 $order = get_datagrid_order();
                 $page = get_datagrid_page();
                 $result = $this->def_model->search($params, $order, $page);
+                echo json_encode($result);
+                break;
+            case 'details':
+                $id = $this->get_request('id');
+                $result = $this->def_model->get_detail($id);
+                echo $result;
                 break;
         }
-        echo json_encode($result);
     }
 
 
@@ -51,6 +71,6 @@ class content extends MY_Controller {
                 $result = $this->def_model->delete($id);
                 break;
         }
-        $this->output->result($result);
+        $this->output_result($result);
     }
 }

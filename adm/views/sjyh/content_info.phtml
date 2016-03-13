@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<?php
+    $this->load->view('/public/linker',array(
+        'css'=>array(),
+        'js' =>array(),
+    ));
+    $ctrl_url = base_url('sjyh/content');
+?>
+<style>
+    .required {
+        color: red;
+    }
+    .js_photoList .easyui-fluid {
+        margin-bottom: 5px;
+    }
+</style>
+</head>
+<body>
+<div id="p-edit" class="easyui-panel" title="" fit="true" border="false">
+    <div class="easyui-layout" fit="true">
+        <div data-options="region:'north'" style="height:28px;overflow:hidden;background-color:#dddddd;" border="false">
+            <button class="easyui-linkbutton" iconCls="icon-back" plain="true" onclick="javascript:window.parent.change_panel('dg');">返回</button>
+        </div>
+        <div data-options="region:'center'" style="overflow:hidden;" border="false">
+            <div id="p-edit-login" class="easyui-panel" fit="true" border="false" style="overflow:auto;">
+                <form id="fm-edit" method="post" style="width:90%; margin:10px;">
+                    <input type="hidden" name="actionxm" value="<?php echo $actionxm; ?>" />
+                    <input type="hidden" name="id" value="<?php echo get_value($info, 'id', '0'); ?>">
+                    <table class="fm-table" cellpadding="8px">
+                        <colgroup>
+                            <col width="240px"  />
+                            <col width="470px" />
+                            <col width="*" />
+                        </colgroup>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                标题：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="name" data-options="required:true,missingMessage:'标题不可为空'" value="<?php echo get_value($info, 'name', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                地区：
+                            </td>
+                            <td>
+                                <select id="selectZone" class="easyui-combobox" style="width:100px;" name="zone_id" data-options="valueField:'id',textField:'name'" panelHeight="auto" ></select>
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                优惠内容：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="content" data-options="multiline:true,required:true,missingMessage:'优惠内容不可为空'" value="<?php echo get_value($info, 'content', ''); ?>" style="width:100%; height:120px;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                地址：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="address" data-options="required:true,missingMessage:'地址不可为空'" value="<?php echo get_value($info, 'address', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                电话：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="phone" data-options="required:true,missingMessage:'电话不可为空'" value="<?php echo get_value($info, 'phone', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                优惠日期：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="period" data-options="required:true,missingMessage:'优惠日期不可为空'" value="<?php echo get_value($info, 'period', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required">*</span>
+                                封面图片：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="cover" data-options="required:true,missingMessage:'封面图片不可为空',prompt:'输入封面图片的地址', validType:'url'" value="<?php echo get_value($info, 'cover', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required"></span>
+                                正文图片：
+                            </td>
+                            <td class="js_photoList">
+                                <input class="easyui-textbox" name="photoList[]" data-options="prompt:'输入正文图片的地址', validType:'url', iconWidth: 22,icons: [{iconCls:'icon-remove'}]" value="" style="width:100%;" />
+                            </td>
+                            <td style="vertical-align:top;">
+                                <span style="color:red;">
+                                    <a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="add_photo()" title="insert">添加一张</a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <span class="required"></span>
+                                排序：
+                            </td>
+                            <td>
+                                <input class="easyui-textbox" name="rank" data-options="prompt:'数字越大越靠前。不填为默认100'" value="<?php echo get_value($info, 'rank', ''); ?>" style="width:100%;" />
+                            </td>
+                            <td>
+                                <span style="color:red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;" colspan="2">
+                                <button type="button" class="easyui-linkbutton" style="width:90px" onclick="do_save()">保存</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="easyui-linkbutton" style="width:90px" onclick="do_reset()">重置</button>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        $('.js_photoList').on('click', '.icon-remove', function(e) {
+            if($('.js_photoList .easyui-fluid').length==1) {
+                $.messager.alert('警告', '最少剩下一张正文图片', 'warning');
+                return;
+            }
+            $(e.target).parent().parent().prev().remove();
+            $(e.target).parent().parent().remove();
+            $.parser.parse($('.js_photoList'));
+        });
+
+        var actionxm = "<?php echo $actionxm; ?>",
+            zone_id = "<?php echo get_value($info, 'zone_id', '-1'); ?>",
+            photoList = "<?php echo get_value($info, 'photoList', ''); ?>";
+
+        // 加载模块名称下拉框
+        $.ajax({
+            url: '<?php echo base_url("sjyh/zone/get?actionxm=get_list"); ?>',
+            type: 'get',
+            datatype: 'json',
+            success: function(result) {
+                var data = $.parseJSON(result);
+                var new_data = new Array();
+                new_data.push({"name":"不限", "id":-1});
+                $.each(data, function(i, n) {
+                    new_data.push({"name":n.name, 'id': n.id});
+                });
+                if(actionxm=='update') {
+                    $.each(new_data, function(i, n) {
+                        if(zone_id==n.id) {
+                            new_data[i]['selected'] = true;
+                        }
+                    });
+                } else {
+                    new_data[0]['selected'] = true;
+                }
+                $("#selectZone").combobox("loadData", new_data);
+            }
+        });
+
+        if(photoList!='') {
+            var photo = new Array(),
+                dom = '';
+            photo = photoList.split('####');
+            for(var i=0; i<photo.length; i++) {
+                dom += '<input class="easyui-textbox js_addInput" name="photoList[]" data-options="prompt:\'输入正文图片的地址\', validType:\'url\',iconWidth: 22,icons: [{iconCls:\'icon-remove\'}]" value="'+photo[i]+'" style="width:100%;" />';
+            }
+            $('.js_photoList').html(dom);
+            $.parser.parse($('.js_photoList'));
+        }
+
+    });
+
+    function add_photo() {
+        var dom = '<input class="easyui-textbox js_addInput" name="photoList[]" data-options="prompt:\'输入正文图片的地址\', validType:\'url\',iconWidth: 22,icons: [{iconCls:\'icon-remove\'}]" value="" style="width:100%;" />';
+        $('.js_photoList').append(dom);
+        $.parser.parse($('.js_photoList'));
+    }
+
+    // 保存登录tips信息
+    function do_save() {
+        $('#fm-edit').form('submit', {
+            url: '<?php echo $ctrl_url; ?>/post',
+            success: function(result) {
+                var result = $.parseJSON(result);
+                var actionxm = $('#fm-edit input[name="actionxm"]').val();
+                if(result.success==false) {
+                    $.messager.alert('操作提示', result.data, 'warning');
+                } else {
+                    cur_tips_id = result.data.tips_id;
+                    $('#fm-edit input[name="actionxm"]').val('update');
+                    $('#fm-edit input[name="tips_id"]').val(cur_tips_id);
+                    $.messager.alert('操作提示', '保存成功', 'info', function() {
+                        window.parent.dg_reload();
+                        window.parent.change_panel('dg');
+                    });
+                }
+            }
+        })
+    }
+
+    // 重置
+    function do_reset() {
+        $('#p-edit').form('clear');
+    }
+</script>
+
+</body>
+</html>

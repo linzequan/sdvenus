@@ -16,9 +16,24 @@ class sjyh_content_model extends MY_Model {
 
 
     public function search($params, $order, $page) {
+
+        $start_time = get_value($params, 'start_time');         // 创建开始时间
+        $end_time = get_value($params, 'end_time');             // 创建结束时间
+        $name = get_value($params, 'name');                     // 标题
+
         $where = array();
+        if($start_time!='') {
+            $where[] = array('create_time', strtotime($start_time), '>=');
+        }
+        if($end_time!='') {
+            $where[] = array('create_time', strtotime($end_time), '<=');
+        }
+        if($name!='') {
+            $where[] = array('name', $name, 'like');
+        }
+
         if(count($order)==0) {
-            $order[] = ' time desc ';
+            $order[] = ' id desc ';
         }
         $datas = $this->db->get_page($this->table, $this->fields, $where, $order, $page);
         $this->load->model('sys/user_model', 'user_model');
@@ -40,8 +55,27 @@ class sjyh_content_model extends MY_Model {
             } else {
                 $datas['rows'][$k]['zone_name'] = '';
             }
+            // 创建时间
+            $datas['rows'][$k]['create_time'] = $v['create_time']=='' ? '' : date('Y-m-d H:i:s', $v['create_time']);
+            // 更新时间
+            $datas['rows'][$k]['update_time'] = $v['update_time']=='' ? '' : date('Y-m-d H:i:s', $v['update_time']);
         }
         return $datas;
+    }
+
+
+    public function get_info($id) {
+        if($id<=0) {
+            return array();
+        }
+        $result = array();
+
+        $query = $this->db->select($this->fields)->where('id', $id)->get($this->table);
+        if($query->num_rows()<=0) {
+            return array();
+        }
+        $result = $query->row_array();
+        return $result;
     }
 
 
@@ -53,8 +87,8 @@ class sjyh_content_model extends MY_Model {
             'phone'         => get_value($info, 'phone'),
             'period'        => get_value($info, 'period'),
             'cover'         => get_value($info, 'cover'),
-            'photoList'     => get_value($info, 'photoList'),
-            'rank'          => get_value($info, 'rank'),
+            'photoList'     => implode('####', get_value($info, 'photoList')),
+            'rank'          => get_value($info, 'rank') ? get_value($info, 'rank') : 100,
             'zone_id'       => get_value($info, 'zone_id'),
             'create_time'   => time(),
             'create_user_id'=> $this->session->userdata('user_id')
@@ -76,8 +110,8 @@ class sjyh_content_model extends MY_Model {
                 'phone'         => get_value($info, 'phone'),
                 'period'        => get_value($info, 'period'),
                 'cover'         => get_value($info, 'cover'),
-                'photoList'     => get_value($info, 'photoList'),
-                'rank'          => get_value($info, 'rank'),
+                'photoList'     => implode('####', get_value($info, 'photoList')),
+                'rank'          => get_value($info, 'rank') ? get_value($info, 'rank') : 100,
                 'zone_id'       => get_value($info, 'zone_id'),
                 'update_time'   => time(),
                 'update_user_id'=> $this->session->userdata('user_id')
@@ -92,5 +126,97 @@ class sjyh_content_model extends MY_Model {
     public function delete($id) {
         $this->db->delete($this->table, array('id'=>$id));
         return $this->create_result(true, 0, '删除成功');
+    }
+
+
+    public function get_detail($id) {
+        if($id<=0) {
+            return false;
+        }
+        $where = array('id'=>$id);
+        $query = $this->db->get_where($this->table, $where);
+        $rows = $query->result_array();
+        if(count($rows)>0) {
+            $str = '<table class="dv-table" border="0" style="width:100%;">' .
+                        '<tr>' .
+                            '<td class="dv-label">编号: </td>' .
+                            '<td>' . $rows[0]['id'] . '</td>' .
+                        '</tr>';
+            if($rows[0]['name']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">标题: </td>' .
+                            '<td>' . $rows[0]['name'] . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['zone_id']!='') {
+                if($rows[0]['zone_id']=='-1') {
+                    $zone_name = '不限';
+                } else {
+                    $this->load->model('sjyh_zone_model');
+                    $CI = &get_instance();
+                    $zoneinfo = $CI->sjyh_zone_model->getNameById($rows[0]['zone_id']);
+                    $zone_name = $zoneinfo['name'];
+                }
+                $str .= '<tr>' .
+                            '<td class="dv-label">地区: </td>' .
+                            '<td>' . $zone_name . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['content']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">优惠内容: </td>' .
+                            '<td>' . $rows[0]['content'] . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['address']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">地址: </td>' .
+                            '<td>' . $rows[0]['address'] . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['phone']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">电话: </td>' .
+                            '<td>' . $rows[0]['phone'] . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['period']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">优惠日期: </td>' .
+                            '<td>' . $rows[0]['period'] . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['cover']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">封面图片: </td>' .
+                            '<td><img src="' . $rows[0]['cover'] . '" style="height: 100px;"</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['photoList']!='') {
+                $photoArr = explode('####', $rows[0]['photoList']);
+                $photo = '';
+                $i = 1;
+                foreach($photoArr as $k=>$v) {
+                    $next = ($i % 3 == 0) ? '<br/>' : '';
+                    $photo .= '<img src="' . $v . '" style="height:100px; margin-right: 10px;">' . $next;
+                    $i++;
+                }
+                $str .= '<tr>' .
+                            '<td class="dv-label">正文图片: </td>' .
+                            '<td>' . $photo . '</td>' .
+                        '</tr>';
+            }
+            if($rows[0]['rank']!='') {
+                $str .= '<tr>' .
+                            '<td class="dv-label">排序: </td>' .
+                            '<td>' . $rows[0]['rank'] . '</td>' .
+                        '</tr>';
+            }
+            $str .= '</table>';
+            return $str;
+        } else {
+            $str = '系统出错，刷新重试！';
+            return $str;
+        }
     }
 }
