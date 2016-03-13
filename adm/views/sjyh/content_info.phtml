@@ -52,7 +52,7 @@
                                 地区：
                             </td>
                             <td>
-                                <select id="selectZone" class="easyui-combobox" style="width:100px;" name="zone_id" data-options="valueField:'id',textField:'name'" panelHeight="auto" ></select>
+                                <select id="selectZone" class="easyui-combobox" style="width:100px;" name="zone_id" data-options="valueField:'id',textField:'name', required:true" panelHeight="auto" ></select>
                             </td>
                             <td>
                                 <span style="color:red;"></span>
@@ -138,7 +138,7 @@
                                 排序：
                             </td>
                             <td>
-                                <input class="easyui-textbox" name="rank" data-options="prompt:'数字越大越靠前。不填为默认100'" value="<?php echo get_value($info, 'rank', ''); ?>" style="width:100%;" />
+                                <input class="easyui-numberbox" name="rank" data-options="prompt:'数字越大越靠前。不填为默认100'" value="<?php echo get_value($info, 'rank', ''); ?>" style="width:100%;" />
                             </td>
                             <td>
                                 <span style="color:red;"></span>
