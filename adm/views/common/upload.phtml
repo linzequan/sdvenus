@@ -52,7 +52,7 @@
             });
         }, 100);
 
-        var prev_host = 'http://<?php echo $_SERVER["HTTP_HOST"]; ?>/www/res/photo/';
+        var prev_host = 'http://<?php echo $_SERVER["HTTP_HOST"] . $this->config->item("photo_dir"); ?>';
         $('#photo').uploadify({
             fileTypeDesc: '上传文件',
             fileTypeExts: '*.jpg;*.jpeg;*.gif;*.png',

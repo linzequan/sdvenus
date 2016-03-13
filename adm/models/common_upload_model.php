@@ -24,6 +24,7 @@ class common_upload_model extends MY_Model {
         $this->load->model('sys/user_model', 'user_model');
         $CI = &get_instance();
         $root_dir = $this->config->item('root_dir');
+        $photo_dir = $this->config->item('photo_dir');
         foreach($datas['rows'] as $k=>$v) {
             if($userinfo=$CI->user_model->get_userinfo_by_id($v['create_user_id'])) {
                 $datas['rows'][$k]['create_user_name'] = $userinfo['user_name'];
@@ -36,7 +37,7 @@ class common_upload_model extends MY_Model {
                 $datas['rows'][$k]['show_photo'] = $v['url'];
             } else {
                 // 图片地址
-                $datas['rows'][$k]['url'] = 'http://' . $_SERVER["HTTP_HOST"] . '/www/res/photo/' . $v['url'];
+                $datas['rows'][$k]['url'] = 'http://' . $_SERVER["HTTP_HOST"] . $photo_dir . $v['url'];
                 // 预览图片
                 $datas['rows'][$k]['show_photo'] = $datas['rows'][$k]['url'];
             }

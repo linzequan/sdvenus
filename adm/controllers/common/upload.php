@@ -45,7 +45,7 @@ class upload extends MY_Controller {
                 if(!empty($_FILES)) {
                     $root_dir = $this->config->item('root_dir');
                     $fileParts = pathinfo($_FILES['uploadfile']['name']);
-                    $targetFolder = '/www/res/photo/';
+                    $targetFolder = $this->config->item('photo_dir');
                     $tempFile = $_FILES['uploadfile']['tmp_name'];
                     $targetPath = $root_dir . $targetFolder;
                     $fileName = time() . '.' . $fileParts['extension'];
