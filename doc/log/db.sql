@@ -69,3 +69,8 @@ create table if not exists `common_upload` (
     `update_user_id` int comment '更新账号id',
     primary key (`id`)
 ) engine = myisam character set utf8 collate utf8_general_ci comment = '公共模块添加图片管理表';
+
+
+-- linzequan 20160314
+-- 公共模块删除更新字段
+alter table `common_upload` drop column update_time, drop column update_user_id;
