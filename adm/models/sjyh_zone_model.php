@@ -18,7 +18,7 @@ class sjyh_zone_model extends MY_Model {
     public function search($params, $order, $page) {
         $where = array();
         if(count($order)==0) {
-            $order[] = ' time desc ';
+            $order[] = ' id desc ';
         }
         $datas = $this->db->get_page($this->table, $this->fields, $where, $order, $page);
         $this->load->model('sys/user_model', 'user_model');
@@ -34,6 +34,10 @@ class sjyh_zone_model extends MY_Model {
             } else {
                 $datas['rows'][$k]['update_user_name'] = '';
             }
+            // 创建时间
+            $datas['rows'][$k]['create_time'] = $v['create_time']=='' ? '' : date('Y-m-d H:i:s', $v['create_time']);
+            // 更新时间
+            $datas['rows'][$k]['update_time'] = $v['update_time']=='' ? '' : date('Y-m-d H:i:s', $v['update_time']);
         }
         return $datas;
     }
@@ -42,7 +46,7 @@ class sjyh_zone_model extends MY_Model {
     public function insert($info) {
         $data = array(
             'name'          => get_value($info, 'name'),
-            'rank'          => get_value($info, 'rank'),
+            'rank'          => get_value($info, 'rank') ? get_value($info, 'rank') : 100,
             'create_time'   => time(),
             'create_user_id'=> $this->session->userdata('user_id')
         );
@@ -58,7 +62,7 @@ class sjyh_zone_model extends MY_Model {
         } else {
             $data = array(
                 'name'          => get_value($info, 'name'),
-                'rank'          => get_value($info, 'rank'),
+                'rank'          => get_value($info, 'rank') ? get_value($info, 'rank') : 100,
                 'update_time'   => time(),
                 'update_user_id'=> $this->session->userdata('user_id')
             );
