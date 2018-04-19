@@ -373,5 +373,5 @@ $config['pms_opts']= array(
 			'special'	=>8
 );
 $config['pms_len'] = count($config['pms_opts']);
-$config['root_dir'] = '/Users/linzequan958/work/priv/github/linzequan/sdvenus';
+$config['root_dir'] = '/Users/eric/work/priv/github/linzequan/sdvenus';
 $config['photo_dir'] = '/www/res/photo/';
